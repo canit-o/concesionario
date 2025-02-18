@@ -21,7 +21,6 @@
             justify-content: space-between;
         }
 
-        /* Título en la parte superior */
         .header {
             width: 100%;
             background-color: rgba(0, 0, 0, 0.7);
@@ -38,15 +37,15 @@
             font-size: 2.5rem;
             color: white;
             padding-left: 20px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Sombra para mejorar visibilidad */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
         }
 
         nav {
             width: 100%;
-            background-color: black; /* Fondo negro para el menú */
-            border-bottom: 20px solid black; /* Línea negra debajo del menú */
+            background-color: black;
+            border-bottom: 20px solid black;
             position: fixed;
-            top: 70px; /* Espacio para el título */
+            top: 70px;
             left: 0;
             padding: 10px 0;
             z-index: 99;
@@ -75,8 +74,31 @@
 
         nav ul li a:hover {
             background-color: rgba(255, 255, 255, 0.3);
-            color: #f39c12; /* Cambio de color al pasar el cursor */
+            color: #f39c12;
             border-radius: 5px;
+        }
+
+        .login-btn {
+            background-color: black;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: #f39c12;
+        }
+
+        .login-btn-container {
+            position: absolute;
+            right: 20px;
+            top: 80px;
+            z-index: 101;
         }
 
         .content {
@@ -86,15 +108,14 @@
             flex-grow: 1;
             text-align: center;
             color: white;
-            background-color: rgba(0, 0, 0, 0.5); 
-            margin-top: 130px; /* Espacio para el menú fijo y título */
+            background-color: rgba(0, 0, 0, 0.5);
+            margin-top: 130px;
         }
 
         h2 {
             font-size: 3rem;
         }
 
-        /* Responsividad para dispositivos móviles */
         @media (max-width: 768px) {
             nav ul li {
                 display: block;
@@ -108,17 +129,19 @@
             .content h2 {
                 font-size: 2rem;
             }
+
+            .login-btn-container {
+                top: 110px;
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- Título en la parte superior -->
 <div class="header">
     <h1>Sistema de Gestión de Coches</h1>
 </div>
 
-<!-- Menú de navegación -->
 <nav>
     <ul>
         <li><a href=".\coches.php" aria-label="Ir a la sección de coches">Coches</a></li>
@@ -127,7 +150,10 @@
     </ul>
 </nav>
 
-<!-- Contenido principal -->
+<div class="login-btn-container">
+    <a href=".\login.php" class="login-btn">Iniciar sesión / Registrarse</a>
+</div>
+
 <div class="content">
 </div>
 
