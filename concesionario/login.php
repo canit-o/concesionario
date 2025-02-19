@@ -17,9 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Verificar la contraseña
         if (password_verify($contrasena, $row['contrasena'])) {
-            // Iniciar sesión
+            // Iniciar sesión y almacenar información
             $_SESSION['id'] = $row['id'];
             $_SESSION['nombre'] = $row['nombre'];
+            $_SESSION['rol'] = $row['rol']; // Aquí se agrega el rol
+
             header("Location: index.php");
         } else {
             echo "Contraseña incorrecta.";

@@ -1,10 +1,13 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Inicial con Menú</title>
-    
+    <title>Página Coches</title>
     <link rel="icon" href="logo.png" type="image/x-icon">
 
     <style>
@@ -123,15 +126,30 @@
 <div class="sidebar">
     <h2>Opciones</h2>
     <button class="option-button" onclick="location.href='index.php'">Inicio</button>
-    <button class="option-button" onclick="location.href='añadircoche.php'">Añadir</button>
-    <button class="option-button" onclick="location.href='listar_coches2.php'">Listar</button>
-    <button class="option-button" onclick="location.href='buscar_coche.php'">Buscar</button>
-    <button class="option-button" onclick="location.href='modificar_coche2.php'">Modificar</button>
-    <button class="option-button" onclick="location.href='eliminar_coche.php'">Borrar</button>
+    
+    <?php
+    // Verificar si el usuario está logueado
+    if (isset($_SESSION['id'])) {
+        // Comprobar el rol del usuario
+        if ($_SESSION['rol'] == 'vendedor') {
+            // Si es vendedor, mostrar mensaje de bienvenida
+            echo '<p>Bienvenido vendedor, ' . $_SESSION['nombre'] . '!</p>';
+            echo '<button class="option-button" onclick="location.href=\'añadircoche.php\'">Añadir</button>';
+            echo '<button class="option-button" onclick="location.href=\'listar_coches2.php\'">Listar</button>';
+            echo '<button class="option-button" onclick="location.href=\'buscar_coche.php\'">Buscar</button>';
+        } elseif ($_SESSION['rol'] == 'cliente') {
+            // Si es cliente, mostrar mensaje de bienvenida
+            echo '<p>Bienvenido cliente, ' . $_SESSION['nombre'] . '!</p>';
+            echo '<button class="option-button" onclick="location.href=\'listar_coches2.php\'">Listar</button>';
+            echo '<button class="option-button" onclick="location.href=\'buscar_coche.php\'">Buscar</button>';
+            echo '<button class="option-button" onclick="location.href=\'alquilar_coche.php\'">Alquilar</button>';
+        }
+    }
+    ?>
 </div>
 
 <div class="content">
-    <p>Estás en la página ¿Qué quiere hacer?</p>
+    <h1>Bienvenido a la página de coches</h1>
 </div>
 
 </body>

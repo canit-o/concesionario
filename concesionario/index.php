@@ -1,15 +1,14 @@
 <?php
 session_start();
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página Inicial con Menú</title>
-    
     <link rel="icon" href="logo.png" type="image/x-icon">
-
     <style>
         body {
             margin: 0;
@@ -58,11 +57,11 @@ session_start();
         nav {
             width: 100%;
             background-color: black;
-            border-bottom: 20px solid black; /* Línea negra que sigue abajo */
+            border-bottom: 20px solid black;
             position: fixed;
-            top: 70px; /* Deja espacio debajo del encabezado */
+            top: 70px;
             left: 0;
-            padding: 30px 0 10px 0; /* Aumentamos el padding superior para hacerla más gruesa hacia arriba */
+            padding: 30px 0 10px 0;
             z-index: 99;
         }
 
@@ -93,7 +92,6 @@ session_start();
             border-radius: 5px;
         }
 
-        /* Botones de login/logout */
         .login-btn, .logout-btn {
             background-color: black;
             color: white;
@@ -147,7 +145,7 @@ session_start();
             }
 
             .login-btn-container {
-                top: 150px; /* También ajustamos para dispositivos pequeños */
+                top: 150px; 
             }
         }
     </style>
@@ -157,9 +155,11 @@ session_start();
 <div class="header">
     <h1>Sistema de Gestión de Coches</h1>
     <div class="welcome-message">
-        <?php if (isset($_SESSION['id'])): ?>
-            Bienvenido, <?php echo $_SESSION['nombre']; ?>!
-        <?php endif; ?>
+        <?php
+        if (isset($_SESSION['id'])) {
+            echo "Bienvenido, " . $_SESSION['nombre'] . "!<br> eres un " . $_SESSION['rol'] . "!";
+        }
+        ?>
     </div>
 </div>
 
@@ -172,17 +172,19 @@ session_start();
 </nav>
 
 <div class="login-btn-container">
-    <?php if (isset($_SESSION['id'])): ?>
-        <!-- Si la sesión está activa, mostrar el botón de Cerrar sesión -->
-        <a href="logout.php" class="logout-btn">Cerrar sesión</a>
-    <?php else: ?>
-        <!-- Si la sesión no está activa, mostrar el botón de Iniciar sesión -->
-        <a href="login.php" class="login-btn">Iniciar sesión / Registrarse</a>
-    <?php endif; ?>
+    <?php
+    if (isset($_SESSION['id'])) {
+        // Si la sesión está activa, mostrar el botón de Cerrar sesión
+        echo '<a href="logout.php" class="logout-btn">Cerrar sesión</a>';
+    } else {
+        // Si la sesión no está activa, mostrar el botón de Iniciar sesión
+        echo '<a href="login.php" class="login-btn">Iniciar sesión / Registrarse</a>';
+    }
+    ?>
 </div>
 
 <div class="content">
-    <!-- Contenido principal de la página -->
+    
 </div>
 
 </body>

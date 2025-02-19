@@ -6,6 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = $_POST['nombre'];
     $email = $_POST['email'];
     $contrasena = password_hash($_POST['contrasena'], PASSWORD_DEFAULT);
+    $rol = $_POST['rol']; // Obtener el rol seleccionado
 
     // Verificar si el correo ya existe
     $sql = "SELECT * FROM usuarios WHERE email = '$email'";
@@ -15,12 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "El correo electrónico ya está registrado.";
     } else {
         // Insertar el nuevo usuario en la base de datos
-        $sql = "INSERT INTO usuarios (nombre, email, contrasena) VALUES ('$nombre', '$email', '$contrasena')";
+        $sql = "INSERT INTO usuarios (nombre, email, contrasena, rol) VALUES ('$nombre', '$email', '$contrasena', '$rol')";
 
+        // Ejecutar la consulta SQL para insertar el usuario
         if ($conn->query($sql) === TRUE) {
-            echo "Registro exitoso. <a href='login.php'>Iniciar sesión</a>";
+            echo "Registro exitoso.";
         } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
+            echo "Error al registrar el usuario: " . $conn->error;
         }
     }
 }
@@ -32,7 +34,7 @@ $conn->close();
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial initial-scale=1.0">
     <title>Registro</title>
     <link rel="icon" href="logo.png" type="image/x-icon">
     <style>
@@ -72,7 +74,8 @@ $conn->close();
 
         input[type="text"],
         input[type="email"],
-        input[type="password"] {
+        input[type="password"],
+        select {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
@@ -84,7 +87,7 @@ $conn->close();
         }
 
         input[type="submit"] {
-            background-color:rgb(219, 152, 52);
+            background-color: rgb(219, 152, 52);
             color: white;
             font-size: 1.2rem;
             padding: 12px;
@@ -96,7 +99,7 @@ $conn->close();
         }
 
         input[type="submit"]:hover {
-            background-color:rgb(182, 115, 15);
+            background-color: rgb(182, 115, 15);
         }
 
         .footer {
@@ -105,7 +108,7 @@ $conn->close();
         }
 
         .footer a {
-            color:rgb(219, 152, 52);
+            color: rgb(219, 152, 52);
             text-decoration: none;
             font-weight: bold;
         }
@@ -140,6 +143,12 @@ $conn->close();
     
     <label for="contrasena">Contraseña:</label>
     <input type="password" id="contrasena" name="contrasena" required>
+
+    <label for="rol">¿Eres vendedor o cliente?</label>
+    <select id="rol" name="rol" required>
+        <option value="cliente">Cliente</option>
+        <option value="vendedor">Vendedor</option>
+    </select>
     
     <input type="submit" value="Registrar">
 </form>
