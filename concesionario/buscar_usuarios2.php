@@ -119,7 +119,7 @@ if (mysqli_num_rows($result) > 0) {
 }
 
 // Botón de regreso
-echo "<a href='index.html' class='back-button'>Volver</a>"; // Redirige al formulario de búsqueda
+echo "<a href='index.php' class='back-button'>Volver</a>"; // Redirige al formulario de búsqueda
 
 echo "</div>"; // Cerrar contenedor principal
 

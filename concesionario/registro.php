@@ -1,158 +1,152 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "rootroot";
-$dbname = "concesionario";
+include 'conexion.php';
 
-// Conectar a la base de datos
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Obtener datos del formulario
+    $nombre = $_POST['nombre'];
+    $email = $_POST['email'];
+    $contrasena = password_hash($_POST['contrasena'], PASSWORD_DEFAULT);
 
-// Verificar si la conexión es exitosa
-if (!$conn) {
-    die("Conexión fallida: " . mysqli_connect_error());
+    // Verificar si el correo ya existe
+    $sql = "SELECT * FROM usuarios WHERE email = '$email'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        echo "El correo electrónico ya está registrado.";
+    } else {
+        // Insertar el nuevo usuario en la base de datos
+        $sql = "INSERT INTO usuarios (nombre, email, contrasena) VALUES ('$nombre', '$email', '$contrasena')";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "Registro exitoso. <a href='login.php'>Iniciar sesión</a>";
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+    }
 }
 
-$nombre_usuario = trim(strip_tags($_REQUEST['username']));
-$correo = trim(strip_tags($_REQUEST['email']));
-$dni = trim(strip_tags($_REQUEST['DNI']));
-$contrasena = trim(strip_tags($_REQUEST['password']));
-
-// Ejecutar la consulta
-$sql = "INSERT INTO usuarios(nombre_usuario, correo, dni, password)
-        VALUES('$nombre_usuario', '$correo', '$dni', '$contrasena')";
-
-// Verificar si la consulta fue exitosa
-if (mysqli_query($conn, $sql)) {
-    echo "Usuario registrado con éxito";
-} else {
-    echo "ERROR: error al registrar el usuario. " . mysqli_error($conn);
-}
-
-// Cerrar la conexión
-mysqli_close($conn);
+$conn->close();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Login</title>
+    <title>Registro</title>
+    <link rel="icon" href="logo.png" type="image/x-icon">
     <style>
+        /* Estilos generales */
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            color: white;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right,rgb(80, 44, 44),rgb(221, 108, 3));
+            color: #fff;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            background-color: black;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .background-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: black;
-            z-index: -1;
         }
 
         h2 {
-            font-size: 2.5rem;
-            text-align: center;
-            color: white;
+            font-size: 2rem;
             margin-bottom: 20px;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
         }
 
         form {
-            background-color: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.7);
             padding: 30px;
             border-radius: 10px;
-            width: 300px;
-            text-align: center;
-            border: 3px solid #f39c12; /* Borde naranja */
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
         }
 
         label {
-            font-size: 1rem;
+            font-size: 1.1rem;
             margin-bottom: 10px;
             display: block;
         }
 
-        input[type="text"], input[type="email"], input[type="password"] {
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
             width: 100%;
             padding: 10px;
-            margin: 10px 0 20px;
-            border: 2px solid #f39c12;
+            margin-bottom: 20px;
             border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.3);
-            color: white;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            background-color: #fff;
+            color: #333;
         }
 
-        button {
-            background-color: #f39c12;
+        input[type="submit"] {
+            background-color:rgb(219, 152, 52);
             color: white;
-            font-size: 1rem;
-            padding: 10px 20px;
+            font-size: 1.2rem;
+            padding: 12px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             width: 100%;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
 
-        button:hover {
-            background-color: #e67e22;
+        input[type="submit"]:hover {
+            background-color:rgb(182, 115, 15);
         }
 
-        p {
-            color: white;
-            font-size: 1rem;
+        .footer {
             margin-top: 20px;
+            font-size: 1rem;
         }
 
-        a {
-            color: #f39c12;
+        .footer a {
+            color:rgb(219, 152, 52);
             text-decoration: none;
+            font-weight: bold;
         }
 
-        a:hover {
+        .footer a:hover {
             text-decoration: underline;
+        }
+
+        /* Estilos para hacer la página responsive */
+        @media (max-width: 768px) {
+            form {
+                width: 90%;
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="background-overlay"></div>
+<h2>¡Regístrate!</h2>
 
-    <h2>Formulario de Registro</h2>
-    <form action="login.php" method="POST">
-        <label for="username">Nombre de usuario:</label>
-        <input type="text" id="username" name="username" required><br>
+<form method="post" action="registro.php">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" required>
+    
+    <label for="email">Correo Electrónico:</label>
+    <input type="email" id="email" name="email" required>
+    
+    <label for="contrasena">Contraseña:</label>
+    <input type="password" id="contrasena" name="contrasena" required>
+    
+    <input type="submit" value="Registrar">
+</form>
 
-        <label for="email">Correo electrónico:</label>
-        <input type="email" id="email" name="email" required><br>
-
-        <label for="password">DNI:</label>
-        <input type="text" id="DNI" name="DNI" required><br>
-
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required><br>
-
-        <button type="submit">Regístrate</button>
-    </form>
-
-    <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión aquí</a></p>
+<div class="footer">
+    <p>¿Ya tienes una cuenta? <a href="login.php">Inicia sesión</a></p>
+</div>
 
 </body>
 </html>
-

@@ -122,7 +122,7 @@
 
 <div class="sidebar">
     <h2>Opciones</h2>
-    <button class="option-button" onclick="location.href='index.html'">Inicio</button>
+    <button class="option-button" onclick="location.href='index.php'">Inicio</button>
     <button class="option-button" onclick="location.href='añadir_usuario.php'">Añadir</button>
     <button class="option-button" onclick="location.href='listar_usuarios.php'">Listar</button>
     <button class="option-button" onclick="location.href='buscar_usuarios.php'">Buscar</button>
