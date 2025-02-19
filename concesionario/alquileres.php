@@ -122,7 +122,7 @@
 
 <div class="sidebar">
     <h2>Opciones</h2>
-    <button class="option-button" onclick="location.href='index.html'">Inicio</button>
+    <button class="option-button" onclick="location.href='index.php'">Inicio</button>
     <button class="option-button" onclick="location.href='listar_alquiler.php'">Listar</button>
     <button class="option-button" onclick="location.href='eliminar_alquiler.php'">Borrar</button>
 </div>

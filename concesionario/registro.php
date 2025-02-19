@@ -14,9 +14,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim(strip_tags($_POST['email']));
     $dni = trim(strip_tags($_POST['dni']));
     $password = trim(strip_tags($_POST['password']));
+    $rango = trim(strip_tags($_POST['rango']));  // Campo de rango
 
     // Validación de campos
-    if (empty($nombre) || empty($email) || empty($dni) || empty($password)) {
+    if (empty($nombre) || empty($email) || empty($dni) || empty($password) || empty($rango)) {
         echo '<script>alert("Por favor complete todos los campos."); window.location = "registro.php";</script>';
         exit();
     }
@@ -48,10 +49,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Encriptar la contraseña
     $password = hash('sha512', $password);
 
-    // Insertar el nuevo usuario en la base de datos
-    $sql = "INSERT INTO registro_usuarios (nombre, email, dni, password) VALUES (?, ?, ?, ?)";
+    // Insertar el nuevo usuario en la base de datos, incluyendo el campo "rango"
+    $sql = "INSERT INTO registro_usuarios (nombre, email, dni, password, rango) VALUES (?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conexion, $sql);
-    mysqli_stmt_bind_param($stmt, "ssss", $nombre, $email, $dni, $password);
+    mysqli_stmt_bind_param($stmt, "sssss", $nombre, $email, $dni, $password, $rango);
 
     if (mysqli_stmt_execute($stmt)) {
         echo '<script>alert("Registro exitoso. Ahora puedes iniciar sesión."); window.location = "login.php";</script>';
@@ -105,7 +106,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         input[type="text"],
         input[type="email"],
-        input[type="password"] {
+        input[type="password"],
+        select {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -160,6 +162,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <label for="password">Contraseña:</label>
         <input type="password" id="password" name="password" required>
+
+        <label for="rango">Rango:</label>
+        <select id="rango" name="rango" required>
+            <option value="">Seleccione un rango</option>
+            <option value="vendedor">Vendedor</option>
+            <option value="comprador">Comprador</option>
+        </select>
 
         <input type="submit" value="Registrar">
     </form>

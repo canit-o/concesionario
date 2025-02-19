@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Si el DNI y la contraseña coinciden, redirigir al usuario
     if (mysqli_num_rows($result) > 0) {
-        header("Location: index.html");
+        header("Location: index.php");
         exit();
     } else {
         echo '<script>alert("DNI o contraseña incorrectos. Por favor, verifique los datos."); window.location = "login.php";</script>';
