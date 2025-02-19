@@ -21,12 +21,11 @@
             justify-content: space-between;
         }
 
-        /* Título en la parte superior */
         .header {
             width: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 15px 0;
-            text-align: left;
+            text-align: center;
             position: fixed;
             top: 0;
             left: 0;
@@ -37,19 +36,30 @@
             margin: 0;
             font-size: 2.5rem;
             color: white;
-            padding-left: 20px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Sombra para mejorar visibilidad */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
         }
 
         nav {
             width: 100%;
-            background-color: black; /* Fondo negro para el menú */
-            border-bottom: 20px solid black; /* Línea negra debajo del menú */
+            background-color: black;
+            border-bottom: 20px solid black;
             position: fixed;
-            top: 70px; /* Espacio para el título */
+            top: 70px;
             left: 0;
             padding: 10px 0;
             z-index: 99;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .nav-left {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
         }
 
         nav ul {
@@ -57,11 +67,12 @@
             margin: 0;
             padding: 0;
             text-align: center;
+            display: flex;
+            gap: 30px;
         }
 
         nav ul li {
             display: inline-block;
-            margin-right: 30px;
         }
 
         nav ul li a {
@@ -75,8 +86,26 @@
 
         nav ul li a:hover {
             background-color: rgba(255, 255, 255, 0.3);
-            color: #f39c12; /* Cambio de color al pasar el cursor */
+            color: #f39c12;
             border-radius: 5px;
+        }
+
+        .login-btn {
+            padding: 10px 20px;
+            background-color: #f39c12;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            margin-left: 20px;
+            margin-right: 40px;
+        }
+
+        .login-btn:hover {
+            background-color: #e67e22;
         }
 
         .content {
@@ -87,14 +116,13 @@
             text-align: center;
             color: white;
             background-color: rgba(0, 0, 0, 0.5); 
-            margin-top: 130px; /* Espacio para el menú fijo y título */
+            margin-top: 130px;
         }
 
         h2 {
             font-size: 3rem;
         }
 
-        /* Responsividad para dispositivos móviles */
         @media (max-width: 768px) {
             nav ul li {
                 display: block;
@@ -113,21 +141,23 @@
 </head>
 <body>
 
-<!-- Título en la parte superior -->
 <div class="header">
     <h1>Sistema de Gestión de Coches</h1>
 </div>
 
-<!-- Menú de navegación -->
 <nav>
-    <ul>
-        <li><a href=".\coches.php" aria-label="Ir a la sección de coches">Coches</a></li>
-        <li><a href=".\usuarios.php" aria-label="Ir a la sección de usuarios">Usuarios</a></li>
-        <li><a href=".\alquileres.php" aria-label="Ir a la sección de alquileres">Alquileres</a></li>
-    </ul>
+    <div class="nav-left">
+        <ul>
+            <li><a href=".\coches.php" aria-label="Ir a la sección de coches">Coches</a></li>
+            <li><a href=".\usuarios.php" aria-label="Ir a la sección de usuarios">Usuarios</a></li>
+            <li><a href=".\alquileres.php" aria-label="Ir a la sección de alquileres">Alquileres</a></li>
+        </ul>
+    </div>
+    <a href="login.php">
+        <button class="login-btn">Iniciar sesión/registrarse</button>
+    </a>
 </nav>
 
-<!-- Contenido principal -->
 <div class="content">
 </div>
 

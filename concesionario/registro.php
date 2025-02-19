@@ -1,17 +1,66 @@
 <?php
-// Iniciar la sesión
-session_start();
 
-// Verificar si el formulario fue enviado
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Recibir los datos del formulario
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Aquí almacenaríamos los datos en una base de datos, pero para este ejemplo los guardaremos en la sesión
-    $_SESSION['usuarios'][$username] = $password;  // Guarda el nombre de usuario y contraseña
+    // Conectar a la base de datos
+    $conexion = mysqli_connect("localhost", "root", "rootroot", "concesionario");
 
-    echo "¡Registro exitoso! Ahora puedes iniciar sesión.";
+    if (mysqli_connect_errno()) {
+        die("Error de conexión a la base de datos: " . mysqli_connect_error());
+    }
+
+    // Recibir y sanitizar datos del formulario
+    $nombre = trim(strip_tags($_POST['nombre']));
+    $email = trim(strip_tags($_POST['email']));
+    $dni = trim(strip_tags($_POST['dni']));
+    $password = trim(strip_tags($_POST['password']));
+
+    // Validación de campos
+    if (empty($nombre) || empty($email) || empty($dni) || empty($password)) {
+        echo '<script>alert("Por favor complete todos los campos."); window.location = "registro.php";</script>';
+        exit();
+    }
+
+    // Validar formato de correo electrónico
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo '<script>alert("El correo electrónico no es válido."); window.location = "registro.php";</script>';
+        exit();
+    }
+
+    // Validar formato de DNI (suponiendo que es numérico, ajusta según el formato específico)
+    if (!preg_match("/^[0-9]{8}$/", $dni)) {
+        echo '<script>alert("El DNI no es válido. Debe tener 8 dígitos numéricos."); window.location = "registro.php";</script>';
+        exit();
+    }
+
+    // Verificar si el correo o el DNI ya existen en la base de datos (prevención de inyección SQL con consultas preparadas)
+    $sql_verificacion = "SELECT * FROM registro_usuarios WHERE email = ? OR dni = ?";
+    $stmt = mysqli_prepare($conexion, $sql_verificacion);
+    mysqli_stmt_bind_param($stmt, "ss", $email, $dni);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if (mysqli_num_rows($result) > 0) {
+        echo '<script>alert("Error: Este correo o DNI ya está registrado."); window.location = "registro.php";</script>';
+        exit();
+    }
+
+    // Encriptar la contraseña
+    $password = hash('sha512', $password);
+
+    // Insertar el nuevo usuario en la base de datos
+    $sql = "INSERT INTO registro_usuarios (nombre, email, dni, password) VALUES (?, ?, ?, ?)";
+    $stmt = mysqli_prepare($conexion, $sql);
+    mysqli_stmt_bind_param($stmt, "ssss", $nombre, $email, $dni, $password);
+
+    if (mysqli_stmt_execute($stmt)) {
+        echo '<script>alert("Registro exitoso. Ahora puedes iniciar sesión."); window.location = "login.php";</script>';
+    } else {
+        echo "Error al registrar el usuario: " . mysqli_error($conexion);
+    }
+
+    // Cerrar la conexión
+    mysqli_close($conexion);
 }
 ?>
 
@@ -21,40 +70,104 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Registro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-footer a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
+
+<div class="form-container">
     <h2>Formulario de Registro</h2>
     <form action="registro.php" method="POST">
-        <label for="username">Nombre de usuario:</label>
-        <input type="text" id="username" name="username" required><br><br>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="email">Correo Electrónico:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="dni">DNI:</label>
+        <input type="text" id="dni" name="dni" required>
 
         <label for="password">Contraseña:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <input type="password" id="password" name="password" required>
 
-        <button type="submit">Registrar</button>
+        <input type="submit" value="Registrar">
     </form>
 
-    <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión aquí</a></p>
+    <div class="form-footer">
+        <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión aquí</a></p>
+    </div>
+</div>
+
 </body>
 </html>
-
-<?php
-// Iniciar la sesión
-session_start();
-
-// Verificar si el formulario fue enviado
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Recibir los datos del formulario
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    // Verificar si el usuario está registrado
-    if (isset($_SESSION['usuarios'][$username]) && $_SESSION['usuarios'][$username] == $password) {
-        $_SESSION['usuario_logueado'] = $username;  // Guardar usuario logueado en la sesión
-        echo "¡Bienvenido, " . $username . "!";
-        // Redirigir a otra página o mostrar el contenido protegido
-    } else {
-        echo "Nombre de usuario o contraseña incorrectos.";
-    }
-}
-?>
