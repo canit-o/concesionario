@@ -6,7 +6,7 @@ session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Obtener datos del formulario
     $email = $_POST['email'];
-    $contrasena = $_POST['contrasena'];
+    $password = $_POST['password'];
 
     // Verificar si el correo existe
     $sql = "SELECT * FROM usuarios WHERE email = '$email'";
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $row = $result->fetch_assoc();
 
         // Verificar la contraseña
-        if (password_verify($contrasena, $row['contrasena'])) {
+        if (password_verify($password, $row['password'])) {
             // Iniciar sesión y almacenar información
             $_SESSION['id'] = $row['id'];
             $_SESSION['nombre'] = $row['nombre'];
@@ -140,8 +140,8 @@ $conn->close();
     <label for="email">Correo Electrónico:</label>
     <input type="email" id="email" name="email" required>
     
-    <label for="contrasena">Contraseña:</label>
-    <input type="password" id="contrasena" name="contrasena" required>
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" required>
     
     <input type="submit" value="Iniciar sesión">
 </form>

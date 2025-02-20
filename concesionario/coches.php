@@ -119,6 +119,22 @@ session_start();
             margin-bottom: 30px;
         }
 
+        .register-message {
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .register-message a {
+            color: #1ABC9C;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .register-message a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -144,6 +160,11 @@ session_start();
             echo '<button class="option-button" onclick="location.href=\'buscar_coche.php\'">Buscar</button>';
             echo '<button class="option-button" onclick="location.href=\'alquilar_coche.php\'">Alquilar</button>';
         }
+    } else {
+        // Si no está logueado, mostrar mensaje y enlace para registrarse
+        echo '<div class="register-message">';
+        echo 'No estás registrado. <a href="register.php">Regístrate aquí</a> o <a href="login.php">inicia sesión</a>.';
+        echo '</div>';
     }
     ?>
 </div>

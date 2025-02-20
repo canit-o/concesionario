@@ -166,8 +166,17 @@ session_start();
 <nav>
     <ul>
         <li><a href="coches.php" aria-label="Ir a la sección de coches">Coches</a></li>
-        <li><a href="usuarios.php" aria-label="Ir a la sección de usuarios">Usuarios</a></li>
-        <li><a href="alquileres.php" aria-label="Ir a la sección de alquileres">Alquileres</a></li>
+
+        <?php
+        // Verificamos el rol y mostramos los botones según el caso
+        if (isset($_SESSION['id'])) {
+            if ($_SESSION['rol'] == 'administrador') {
+                // Si el usuario es administrador, mostramos todos los botones
+                echo '<li><a href="usuarios.php" aria-label="Ir a la sección de usuarios">Usuarios</a></li>';
+                echo '<li><a href="alquileres.php" aria-label="Ir a la sección de alquileres">Alquileres</a></li>';
+            }
+        }
+        ?>
     </ul>
 </nav>
 

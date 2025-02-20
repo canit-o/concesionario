@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Obtener datos del formulario
     $nombre = $_POST['nombre'];
     $email = $_POST['email'];
-    $contrasena = password_hash($_POST['contrasena'], PASSWORD_DEFAULT);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $rol = $_POST['rol']; // Obtener el rol seleccionado
 
     // Verificar si el correo ya existe
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "El correo electrónico ya está registrado.";
     } else {
         // Insertar el nuevo usuario en la base de datos
-        $sql = "INSERT INTO usuarios (nombre, email, contrasena, rol) VALUES ('$nombre', '$email', '$contrasena', '$rol')";
+        $sql = "INSERT INTO usuarios (nombre, email, password, rol) VALUES ('$nombre', '$email', '$password', '$rol')";
 
         // Ejecutar la consulta SQL para insertar el usuario
         if ($conn->query($sql) === TRUE) {
@@ -141,8 +141,8 @@ $conn->close();
     <label for="email">Correo Electrónico:</label>
     <input type="email" id="email" name="email" required>
     
-    <label for="contrasena">Contraseña:</label>
-    <input type="password" id="contrasena" name="contrasena" required>
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" required>
 
     <label for="rol">¿Eres vendedor o cliente?</label>
     <select id="rol" name="rol" required>
