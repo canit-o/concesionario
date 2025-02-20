@@ -162,6 +162,7 @@ session_start();
         }
     } else {
         // Si no está logueado, mostrar mensaje y enlace para registrarse
+        echo '<button class="option-button" onclick="location.href=\'listar_coches2.php\'">Listar</button>';
         echo '<div class="register-message">';
         echo 'No estás registrado. <a href="register.php">Regístrate aquí</a> o <a href="login.php">inicia sesión</a>.';
         echo '</div>';
