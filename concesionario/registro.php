@@ -1,29 +1,78 @@
 <?php
 include 'conexion.php';
 
+// Verificar si la conexión a la base de datos es exitosa
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener datos del formulario
-    $nombre = $_POST['nombre'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $rol = $_POST['rol']; // Obtener el rol seleccionado
+    // Inicializar variables de error
+    $nombre = $email = $password = $rol = "";
+    $error = false;
+    $errorMsg = "";
 
-    // Verificar si el correo ya existe
-    $sql = "SELECT * FROM usuarios WHERE email = '$email'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        echo "El correo electrónico ya está registrado.";
+    // Obtener datos del formulario y validar
+    if (empty($_POST['nombre'])) {
+        $error = true;
+        $errorMsg = "El nombre es obligatorio.";
     } else {
-        // Insertar el nuevo usuario en la base de datos
-        $sql = "INSERT INTO usuarios (nombre, email, password, rol) VALUES ('$nombre', '$email', '$password', '$rol')";
+        $nombre = htmlspecialchars($_POST['nombre']);
+    }
 
-        // Ejecutar la consulta SQL para insertar el usuario
-        if ($conn->query($sql) === TRUE) {
-            echo "Registro exitoso.";
+    if (empty($_POST['email'])) {
+        $error = true;
+        $errorMsg = "El correo electrónico es obligatorio.";
+    } else {
+        $email = htmlspecialchars($_POST['email']);
+    }
+
+    if (empty($_POST['password'])) {
+        $error = true;
+        $errorMsg = "La contraseña es obligatoria.";
+    } else {
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    }
+
+    if (empty($_POST['rol'])) {
+        $error = true;
+        $errorMsg = "El rol es obligatorio.";
+    } else {
+        $rol = htmlspecialchars($_POST['rol']);
+    }
+
+    // Si no hay errores en los datos
+    if (!$error) {
+        // Verificar si el correo ya existe
+        $sql = "SELECT * FROM usuarios WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $email); // Vincular parámetros para prevenir inyecciones SQL
+
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                echo "El correo electrónico ya está registrado.";
+            } else {
+                // Insertar el nuevo usuario en la base de datos
+                $sql = "INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ssss", $nombre, $email, $password, $rol); // Vincular parámetros
+
+                if ($stmt->execute()) {
+                    echo "Registro exitoso.";
+                } else {
+                    echo "Error al registrar el usuario: " . $stmt->error;
+                }
+            }
         } else {
-            echo "Error al registrar el usuario: " . $conn->error;
+            echo "Error al verificar el correo electrónico: " . $stmt->error;
         }
+
+        // Cerrar la declaración
+        $stmt->close();
+    } else {
+        echo $errorMsg;
     }
 }
 
@@ -34,7 +83,7 @@ $conn->close();
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
     <link rel="icon" href="logo.png" type="image/x-icon">
     <style>
