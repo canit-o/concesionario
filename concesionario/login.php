@@ -4,30 +4,65 @@ include 'conexion.php';
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener datos del formulario
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    // Inicializar variables de error
+    $email = $password = "";
+    $error = false;
+    $errorMsg = "";
 
-    // Verificar si el correo existe
-    $sql = "SELECT * FROM usuarios WHERE email = '$email'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-
-        // Verificar la contraseña
-        if (password_verify($password, $row['password'])) {
-            // Iniciar sesión y almacenar información
-            $_SESSION['id'] = $row['id'];
-            $_SESSION['nombre'] = $row['nombre'];
-            $_SESSION['rol'] = $row['rol']; // Aquí se agrega el rol
-
-            header("Location: index.php");
-        } else {
-            echo "Contraseña incorrecta.";
-        }
+    // Obtener datos del formulario y validar
+    if (empty($_POST['email'])) {
+        $error = true;
+        $errorMsg = "El correo electrónico es obligatorio.";
     } else {
-        echo "No se encontró el correo electrónico.";
+        $email = htmlspecialchars(trim($_POST['email']));
+    }
+
+    if (empty($_POST['password'])) {
+        $error = true;
+        $errorMsg = "La contraseña es obligatoria.";
+    } else {
+        $password = $_POST['password'];
+    }
+
+    // Si no hay errores, continuar con la validación
+    if (!$error) {
+        // Verificar si el correo existe
+        $sql = "SELECT * FROM usuarios WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $email); // Vincular parámetro para prevenir inyecciones SQL
+
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+
+                // Verificar la contraseña
+                if (password_verify($password, $row['password'])) {
+                    // Iniciar sesión y almacenar información
+                    $_SESSION['id'] = $row['id'];
+                    $_SESSION['nombre'] = $row['nombre'];
+                    $_SESSION['rol'] = $row['rol']; // Aquí se agrega el rol
+
+                    header("Location: index.php");
+                    exit; // Asegurarse de que no se ejecuten más líneas de código después del redireccionamiento
+                } else {
+                    $errorMsg = "Contraseña incorrecta.";
+                }
+            } else {
+                $errorMsg = "No se encontró el correo electrónico.";
+            }
+        } else {
+            $errorMsg = "Error al ejecutar la consulta: " . $stmt->error;
+        }
+
+        // Cerrar la declaración
+        $stmt->close();
+    }
+
+    // Si hay un mensaje de error, mostrarlo
+    if ($errorMsg) {
+        echo "<p style='color: red;'>$errorMsg</p>";
     }
 }
 
