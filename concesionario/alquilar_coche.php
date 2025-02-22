@@ -194,11 +194,7 @@ h1 {
 <div class="sidebar">
     <h2>Opciones</h2>
     <button class="option-button" onclick="location.href='index.php'">Inicio</button>
-    <button class="option-button" onclick="location.href='añadircoche.php'">Añadir</button>
-    <button class="option-button" onclick="location.href='listar_coches2.php'">Listar</button>
-    <button class="option-button" onclick="location.href='buscar_coche.php'">Buscar</button>
-    <button class="option-button" onclick="location.href='modificar_coche2.php'">Modificar</button>
-    <button class="option-button" onclick="location.href='eliminar_coche.php'">Borrar</button>
+    
 </div>
 
 <div class="content">

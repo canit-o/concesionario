@@ -159,6 +159,17 @@ session_start();
             echo '<button class="option-button" onclick="location.href=\'listar_coches2.php\'">Listar</button>';
             echo '<button class="option-button" onclick="location.href=\'buscar_coche.php\'">Buscar</button>';
             echo '<button class="option-button" onclick="location.href=\'alquilar_coche.php\'">Alquilar</button>';
+        } elseif ($_SESSION['rol'] == 'administrador') {
+            // Si es administrador, mostrar mensaje de bienvenida
+            echo '<p>Bienvenido administrador, ' . $_SESSION['nombre'] . '!</p>';
+            echo '<button class="option-button" onclick="location.href=\'listar_coches2.php\'">Listar</button>';
+            echo '<button class="option-button" onclick="location.href=\'buscar_coche.php\'">Buscar</button>';
+            echo '<button class="option-button" onclick="location.href=\'añadircoche.php\'">Añadir</button>';
+            echo '<button class="option-button" onclick="location.href=\'alquilar_coche.php\'">Alquilar</button>';
+            echo '<button class="option-button" onclick="location.href=\'eliminar_coche.php\'">Eliminar</button>';
+            echo '<button class="option-button" onclick="location.href=\'modificar_coche2.php\'">Modificar</button>';
+
+
         }
     } else {
         // Si no está logueado, mostrar mensaje y enlace para registrarse
